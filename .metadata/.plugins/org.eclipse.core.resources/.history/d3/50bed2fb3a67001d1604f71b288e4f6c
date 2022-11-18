@@ -1,0 +1,57 @@
+package model.dao;
+
+import java.sql.SQLException;
+import model.dto.Like;
+
+public class LikeDAO {
+	private JDBCUtil jdbcUtil = null;
+	
+	// JDBC 객체 생성
+	public LikeDAO() {
+		jdbcUtil = new JDBCUtil();
+	}
+	
+	// [C] 새로운 찜 이벤트 생성
+	public int create(Like like) throws SQLException {
+		String sql = "INSERT INTO LIKE VALUES (?, ?, ?, ?)";
+		Object[] param = new Object[] {
+				like.getLikeID(), like.getUserID(), like.getLectureID(), like.getValidity()
+		};
+		
+		jdbcUtil.setSqlAndParameters(sql, param);
+		
+		try {
+			int result = jdbcUtil.executeUpdate();
+			return result;
+		} catch (Exception ex) {
+			jdbcUtil.rollback();
+			ex.printStackTrace();
+		} finally {
+			jdbcUtil.commit();
+			jdbcUtil.close();
+		}
+		
+		return 0;
+	}
+	
+	// [D] 찜 취소
+	public int remove(int likeID) throws SQLException {
+		String sql = "DELETE FROM LIKE WHERE likeID=?";
+		
+		jdbcUtil.setSqlAndParameters(sql, new Object[] {likeID});
+		
+		try {				
+			int result = jdbcUtil.executeUpdate();	// delete 문 실행
+			return result;
+		} catch (Exception ex) {
+			jdbcUtil.rollback();
+			ex.printStackTrace();
+		}
+		finally {
+			jdbcUtil.commit();
+			jdbcUtil.close();	// resource 반환
+		}	
+		
+		return 0;
+	}
+}

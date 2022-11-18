@@ -1,0 +1,37 @@
+package model.dao;
+
+import java.sql.SQLException;
+
+import model.dto.Registeration;
+
+public class RegisterationDAO {
+	private JDBCUtil jdbcUtil = null;
+	
+	// JDBC 객체 생성
+	public RegisterationDAO() {
+		jdbcUtil = new JDBCUtil();
+	}
+	
+	// [C] 새로운 등록 이벤트 생성
+	public int create(Registeration rg) throws SQLException {
+		String sql = "INSERT INTO REGISTERATION VALUES (?, ?, ?, ?)";
+		Object[] param = new Object[] {
+				rg.getRegisterationID(), rg.getUserID(), rg.getLectureID(), rg.getValidity()
+		};
+		
+		jdbcUtil.setSqlAndParameters(sql, param);
+		
+		try {
+			int result = jdbcUtil.executeUpdate();
+			return result;
+		} catch (Exception ex) {
+			jdbcUtil.rollback();
+			ex.printStackTrace();
+		} finally {
+			jdbcUtil.commit();
+			jdbcUtil.close();
+		}
+		
+		return 0;
+	} 
+}

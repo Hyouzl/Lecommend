@@ -1,0 +1,22 @@
+package model.dao;
+
+import model.dto.Lecture;
+
+public class LectureDAO {
+	private JDBCUtil jdbcUtil = null;
+	
+	// JDBC 객체 생성
+	public LectureDAO() {
+		jdbcUtil = new JDBCUtil();
+	}
+	
+	// [C] 새로운 강의 생성
+	public int create(Lecture lecture) throws SQLException {
+		String sql = "INSERT INTO LECTURE VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		Object[] param = new Object[] {
+				lecture.getLectureID(), lecture.getTitle(), lecture.getClassroom(), lecture.getProfessor(), 
+				lecture.getOccupancy(), lecture.getOnOff(), lecture.getRegistered(), lecture.getClassroomLocation(),
+				lecture.getLectureForm(), lecture.getInterest(), lecture.getClassTime(), lecture.getExamForm(), lecture.getWeek(), lecture.getLikes()
+		};
+	}
+}

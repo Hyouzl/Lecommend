@@ -1,0 +1,8 @@
+INDEX VERSION 1.4+C:\Users\yoonm\lecommend-workspace\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3779619412.index
+691240457.index
+863470918.index
+1742408567.index
+871413325.index
+1985040297.index
+3035815111.index

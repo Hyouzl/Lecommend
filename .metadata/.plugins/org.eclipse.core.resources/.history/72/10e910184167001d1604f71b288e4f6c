@@ -1,0 +1,78 @@
+package model.dao;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import model.dto.Like;
+
+public class LikeDAO {
+	private JDBCUtil jdbcUtil = null;
+	
+	// JDBC 객체 생성
+	public LikeDAO() {
+		jdbcUtil = new JDBCUtil();
+	}
+	
+	// [C] 새로운 찜 이벤트 생성
+	public int create(Like like) throws SQLException {
+		String sql = "INSERT INTO LIKE VALUES (?, ?, ?, ?)";
+		Object[] param = new Object[] {
+				like.getLikeID(), like.getUserID(), like.getLectureID(), like.getValidity()
+		};
+		
+		jdbcUtil.setSqlAndParameters(sql, param);
+		
+		try {
+			int result = jdbcUtil.executeUpdate();
+			return result;
+		} catch (Exception ex) {
+			jdbcUtil.rollback();
+			ex.printStackTrace();
+		} finally {
+			jdbcUtil.commit();
+			jdbcUtil.close();
+		}
+		
+		return 0;
+	}
+	
+	// [D] 찜 취소
+	public int remove(int likeID) throws SQLException {
+		String sql = "DELETE FROM LIKE WHERE likeID=?";
+		
+		jdbcUtil.setSqlAndParameters(sql, new Object[] {likeID});
+		
+		try {				
+			int result = jdbcUtil.executeUpdate();	// delete 문 실행
+			return result;
+		} catch (Exception ex) {
+			jdbcUtil.rollback();
+			ex.printStackTrace();
+		}
+		finally {
+			jdbcUtil.commit();
+			jdbcUtil.close();	// resource 반환
+		}	
+		
+		return 0;
+	}
+	
+	// [R] 해당 ID에 해당하는 Like 이벤트를 Like 도메인 클래스에 저장하여 반환
+	public Like findLike(int likeID) throws SQLException {
+		String sql = "SELECT * FROM LIKE WHERE likeID=?";
+		
+		jdbcUtil.setSqlAndParameters(sql, new Object[] {likeID});
+		
+		try {
+			ResultSet rs = jdbcUtil.executeQuery();		
+			if (rs.next()) {						
+				Like like = new Like(likeID, rs.getUserID(), rs.getLectureID(), rs.getValidity());
+				return like;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			jdbcUtil.close();		// resource 반환
+		}
+		return null;
+	}
+}

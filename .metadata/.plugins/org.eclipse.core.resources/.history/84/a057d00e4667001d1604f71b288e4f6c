@@ -1,0 +1,46 @@
+package model.dao;
+
+import java.sql.SQLException;
+
+import model.dto.Lecture;
+
+public class LectureDAO {
+	private JDBCUtil jdbcUtil = null;
+	
+	// JDBC 객체 생성
+	public LectureDAO() {
+		jdbcUtil = new JDBCUtil();
+	}
+	
+	// [C] 새로운 강의 생성
+	public int create(Lecture lecture) throws SQLException {
+		String sql = "INSERT INTO LECTURE VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		Object[] param = new Object[] {
+				lecture.getLectureID(), lecture.getTitle(), lecture.getClassroom(), lecture.getProfessor(), lecture.getOccupancy(), 
+				lecture.getOnOff(), lecture.getRegistered(), lecture.getClassroomLocation(), lecture.getLectureForm(), lecture.getInterest(), 
+				lecture.getClassTime(), lecture.getExamForm(), lecture.getWeek(), lecture.getLikes()
+		};
+		
+		jdbcUtil.setSqlAndParameters(sql, param);
+		
+		try {
+			int result = jdbcUtil.executeUpdate();
+			return result;
+		} catch (Exception ex) {
+			jdbcUtil.rollback();
+			ex.printStackTrace();
+		} finally {
+			jdbcUtil.commit();
+			jdbcUtil.close();
+		}
+		
+		return 0;
+	}
+	
+	// [R] 해당 ID에 해당하는 강의를 도메인 클래스에 저장하여 반환
+	public Lecture findLecture(int lectureID) throws SQLException {
+		String sql ="SELECT * FROM LECTURE WHERE lectureID=?";
+		
+		jdbcUtil.setSqlAndParameters(sql, new Object[] {lectureID});
+	}
+}

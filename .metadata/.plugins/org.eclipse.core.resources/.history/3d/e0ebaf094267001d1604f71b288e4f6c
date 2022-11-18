@@ -1,0 +1,10 @@
+package model.dao;
+
+public class RegisterationDAO {
+	private JDBCUtil jdbcUtil = null;
+	
+	// JDBC 객체 생성
+	public LikeDAO() {
+		jdbcUtil = new JDBCUtil();
+	}
+}
